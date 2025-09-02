@@ -16,6 +16,10 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   if (width == 0 || height == 0) {
     return;
   }
+  // Hide eyebrows for Neutral and Happy expressions
+  if (exp == Expression::Neutral || exp == Expression::Happy) {
+    return;
+  }
   // draw two triangles to make rectangle
   if (exp == Expression::Angry || exp == Expression::Sad) {
     int x1, y1, x2, y2, x3, y3, x4, y4;
@@ -32,12 +36,29 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
     y4 = y + height / 2 + dy;
     spi->fillTriangle(x1, y1, x2, y2, x3, y3, primaryColor);
     spi->fillTriangle(x2, y2, x3, y3, x4, y4, primaryColor);
+  } else if (exp == Expression::Doubt) {
+    // Draw droopy eyebrows for doubt expression (困った下がり眉)
+    int x1, y1, x2, y2, x3, y3, x4, y4;
+    // Create downward sloping eyebrows - inner part higher, outer part lower
+    int dx = isLeft ? 4 : -4;  // Direction of slope (left brow slopes down-right, right brow slopes down-left)
+    int dy = 6;  // Vertical offset for droopy effect
+    
+    x1 = x - width / 2;        // Inner edge X
+    x4 = x + width / 2;        // Outer edge X
+    x2 = x1 + dx / 2;          // Inner control point
+    x3 = x4 + dx;              // Outer control point
+    
+    y1 = y - height / 2;       // Inner edge Y (higher)
+    y2 = y + height / 2;       // Inner bottom
+    y3 = y - height / 2 + dy;  // Outer edge Y (lower for droopy effect)
+    y4 = y + height / 2 + dy;  // Outer bottom
+    
+    spi->fillTriangle(x1, y1, x2, y2, x3, y3, primaryColor);
+    spi->fillTriangle(x2, y2, x3, y3, x4, y4, primaryColor);
   } else {
+    // For other expressions (Sleepy, Rora), draw standard rectangle eyebrows
     int x1 = x - width / 2;
     int y1 = y - height / 2;
-    if (exp == Expression::Happy) {
-      y1 = y1 - 5;
-    }
     spi->fillRect(x1, y1, width, height, primaryColor);
   }
 }

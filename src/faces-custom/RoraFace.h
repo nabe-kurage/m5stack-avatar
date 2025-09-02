@@ -136,9 +136,9 @@ RoraFace::RoraFace()
            // Left eye with custom RoraEye  
            new RoraEye(45, 35, true), new BoundingRect(96, 230),
            // Right eyebrow
-           new Eyeblow(32, 0, false), new BoundingRect(67, 96),
+           new Eyeblow(32, 6, false), new BoundingRect(67, 96),
            // Left eyebrow
-           new Eyeblow(32, 0, true), new BoundingRect(72, 230)) {}
+           new Eyeblow(32, 6, true), new BoundingRect(72, 230)) {}
 
 }  // namespace m5avatar
 
