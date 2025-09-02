@@ -20,28 +20,48 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   if (exp == Expression::Neutral || exp == Expression::Happy) {
     return;
   }
-  // Draw mouth-like rounded rectangle eyebrows for all expressions with position adjustments
-  int x1 = x - width / 2;
-  int y1 = y - height / 2;
-  int cornerRadius = height / 2;  // Make corners rounded like mouth
   
-  // Adjust position based on expression to maintain character
-  if (exp == Expression::Angry) {
-    // Angry: tilt eyebrows inward (higher on inner side)
-
-  } else if (exp == Expression::Sad) {
-    // Sad: tilt eyebrows outward (higher on outer side) 
-    int tilt = isLeft ? 3 : -3;  // Outer side higher
-    y1 += tilt;
-  } else if (exp == Expression::Doubt) {
-    // Doubt: lower eyebrows with slight droop (outer side lower)
-    int droop = isLeft ? 4 : -4;  // Outer side lower for droopy effect
-    y1 += 3;  // Overall lower position
-    x1 += droop / 2;  // Slight horizontal offset for droop
+  // Draw angled eyebrows using two triangles (based on AAEyebrow implementation)
+  if (exp == Expression::Angry || exp == Expression::Sad || exp == Expression::Doubt) {
+    int x1, y1, x2, y2, x3, y3, x4, y4;
+    int a, dx, dy;
+    
+    if (exp == Expression::Angry) {
+      // Angry: \\ / shape - inner side higher (ハの字)
+      a = isLeft ? 1 : -1;  // For angry, reverse the direction to make \\ / shape
+      dx = a * 4;  // Horizontal offset for angle
+      dy = a * 6;  // Vertical offset for angle
+    } else if (exp == Expression::Sad) {
+      // Sad: / \\ shape - outer side higher (逆ハの字)
+      a = isLeft ? -1 : 1;  // Normal direction for sad
+      dx = a * 3;
+      dy = a * 5;
+    } else { // Expression::Doubt
+      // Doubt: slight droop
+      a = isLeft ? 1 : -1;
+      dx = a * 2;
+      dy = a * 3;
+    }
+    
+    // Calculate the four corners of the angled eyebrow
+    x1 = x - width / 2;      // Left inner point
+    x2 = x1 - dx;            // Left outer point 
+    x4 = x + width / 2;      // Right inner point
+    x3 = x4 + dx;            // Right outer point
+    y1 = y - height / 2 - dy; // Left inner Y
+    y2 = y + height / 2 - dy; // Left outer Y
+    y3 = y - height / 2 + dy; // Right inner Y  
+    y4 = y + height / 2 + dy; // Right outer Y
+    
+    // Draw angled eyebrow using two triangles
+    spi->fillTriangle(x1, y1, x2, y2, x3, y3, primaryColor);
+    spi->fillTriangle(x2, y2, x3, y3, x4, y4, primaryColor);
+  } else {
+    // For other expressions (Sleepy, Rora), draw standard rectangle
+    int x1 = x - width / 2;
+    int y1 = y - height / 2;
+    spi->fillRect(x1, y1, width, height, primaryColor);
   }
-  
-  // Draw rounded rectangle eyebrow
-  spi->fillRoundRect(x1, y1, width, height, cornerRadius, primaryColor);
 }
 
 }  // namespace m5avatar
