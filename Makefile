@@ -21,6 +21,7 @@ help:
 	@echo "  make sleepy      - 眠そうな顔にする"
 	@echo "  make doubt       - 困った顔にする"
 	@echo "  make neutral     - 普通の顔にする"
+	@echo "  make rora        - Roraの特別なキラキラ表情にする ✨"
 	@echo "  make play        - 音声再生"
 	@echo "  make status      - ステータス確認"
 	@echo "  make interactive - インタラクティブモード"
@@ -56,6 +57,9 @@ doubt:
 
 neutral:
 	@$(PYTHON) $(PYTHON_SCRIPT) neutral
+
+rora:
+	@$(PYTHON) $(PYTHON_SCRIPT) rora
 
 # 音声再生
 play:
@@ -114,6 +118,9 @@ shell-happy:
 shell-sad:
 	@$(SHELL_SCRIPT) sad
 
+shell-rora:
+	@$(SHELL_SCRIPT) rora
+
 shell-status:
 	@$(SHELL_SCRIPT) status
 
@@ -133,7 +140,9 @@ demo:
 	@sleep 3
 	@$(PYTHON) $(PYTHON_SCRIPT) doubt
 	@sleep 3
+	@$(PYTHON) $(PYTHON_SCRIPT) rora
+	@sleep 3
 	@$(PYTHON) $(PYTHON_SCRIPT) neutral
 	@echo "デモ完了"
 
-.PHONY: help setup test happy sad angry sleepy doubt neutral play status interactive upload build find-port clean shell-happy shell-sad shell-status demo
+.PHONY: help setup test happy sad angry sleepy doubt neutral rora play status interactive upload build find-port clean shell-happy shell-sad shell-rora shell-status demo

@@ -108,7 +108,7 @@ class M5StackController:
     def interactive_mode(self):
         """インタラクティブモード"""
         print("\n=== M5Stack Avatar インタラクティブ制御 ===")
-        print("利用可能なコマンド: happy, sad, angry, sleepy, doubt, neutral, play, status, help")
+        print("利用可能なコマンド: happy, sad, angry, sleepy, doubt, neutral, rora, play, status, help")
         print("終了するには 'quit' または Ctrl+C を押してください\n")
         
         if not self.connect():
@@ -131,7 +131,7 @@ class M5StackController:
 def main():
     parser = argparse.ArgumentParser(description='M5Stack Avatar Controller')
     parser.add_argument('command', nargs='?', 
-                       choices=['happy', 'sad', 'angry', 'sleepy', 'doubt', 'neutral', 'play', 'status', 'help'],
+                       choices=['happy', 'sad', 'angry', 'sleepy', 'doubt', 'neutral', 'rora', 'play', 'status', 'help'],
                        help='M5Stackに送信するコマンド')
     parser.add_argument('--port', '-p', help='シリアルポート (例: /dev/cu.usbserial-XXXXXXXX)')
     parser.add_argument('--interactive', '-i', action='store_true', help='インタラクティブモード')

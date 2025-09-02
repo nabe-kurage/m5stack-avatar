@@ -61,6 +61,7 @@ M5Stack Avatar Controller - Shell Script
     sleepy   - 眠そうな顔にする
     doubt    - 困った顔にする
     neutral  - 普通の顔にする
+    rora     - Roraの特別なキラキラ表情にする ✨
     play     - 音声再生
     status   - ステータス確認
     help     - ヘルプ表示
@@ -81,7 +82,7 @@ main() {
     local port="${2:-$M5STACK_PORT}"
     
     case "$command" in
-        happy|sad|angry|sleepy|doubt|neutral|play|status|help)
+        happy|sad|angry|sleepy|doubt|neutral|rora|play|status|help)
             send_command "$command" "$port"
             ;;
         ""|--help|-h)

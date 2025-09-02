@@ -49,6 +49,7 @@ make status
 | `sleepy` | 😴 眠そうな顔 | `make sleepy` |
 | `doubt` | 🤔 困った顔 | `make doubt` |
 | `neutral` | 😐 普通の顔 | `make neutral` |
+| `rora` | ✨ Roraの特別なキラキラ表情 | `make rora` |
 | `play` | 🎵 音声再生 | `make play` |
 | `status` | ℹ️ ステータス確認 | `make status` |
 
