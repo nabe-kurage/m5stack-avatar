@@ -49,13 +49,7 @@ void setup()
   Serial.begin(115200);
   Serial.printf("M5Stack Avatar with Audio starting...\n");
   
-  // WiFiをONにしてPC共有確認用
-  WiFi.mode(WIFI_STA);
-  Serial.printf("WiFi enabled for PC sharing check\n");
-  
-  // WiFi情報を表示
-  displayWiFiInfo();
-  delay(5000);  // 5秒間表示
+  WiFi.mode(WIFI_OFF);  // WiFiを無効にして音声再生に集中
   
   // microSDカードを初期化
   if (!SD.begin()) {
@@ -232,15 +226,6 @@ void loop()
     // デバッグ用にシリアル出力
     const char* expressionNames[] = {"Angry", "Doubt", "Sleepy", "Neutral", "Happy"};
     Serial.printf("Expression changed to %s\n", expressionNames[randomIndex]);
-  }
-  
-  if (M5.BtnC.pressedFor(2000)) {
-    // Cボタンを2秒長押ししたらWiFi情報表示
-    Serial.printf("WiFi info display started\n");
-    displayWiFiInfo();
-    delay(5000);  // 5秒間表示
-    M5.Lcd.fillScreen(TFT_BLACK);  // 画面をクリア
-    Serial.printf("WiFi info display finished\n");
   }
   
   delay(10);  // 少し待機してCPU負荷を軽減
