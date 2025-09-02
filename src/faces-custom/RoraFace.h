@@ -132,13 +132,13 @@ void RoraEye::drawPupil(M5Canvas *canvas) {
 RoraFace::RoraFace()
     : Face(new Mouth(10, 40, 2, 40), new BoundingRect(110, 163),
            // Right eye with custom RoraEye
-           new RoraEye(45, 35, false), new BoundingRect(93, 90),
+           new RoraEye(45, 35, false), new BoundingRect(93, 230),
            // Left eye with custom RoraEye  
-           new RoraEye(45, 35, true), new BoundingRect(93, 230),
+           new RoraEye(45, 35, true), new BoundingRect(93, 90),
            // Right eyebrow (aligned with right eye center) - thicker like mouth
-           new Eyeblow(28, 6, false), new BoundingRect(70, 110),
+           new Eyeblow(28, 6, false), new BoundingRect(70, 210),
            // Left eyebrow (aligned with left eye center) - thicker like mouth
-           new Eyeblow(28, 6, true), new BoundingRect(70, 210)) {}
+           new Eyeblow(28, 6, true), new BoundingRect(70, 110)) {}
 
 }  // namespace m5avatar
 
