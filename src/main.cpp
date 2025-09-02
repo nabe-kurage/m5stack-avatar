@@ -6,6 +6,7 @@
 #include "AudioFileSourceID3.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2S.h"
+#include "faces-custom/RoraFace.h"
 
 using namespace m5avatar;
 
@@ -16,10 +17,12 @@ AudioOutputI2S *out;
 AudioFileSourceID3 *id3;
 
 Avatar avatar;
+RoraFace* roraFace;
 
 // カラーパレット（音声データの有無で変更）
 ColorPalette normalPalette;    // 通常のパレット
 ColorPalette tonePalette;      // トーン音用パレット
+ColorPalette roraPalette;      // Rora専用パレット
 
 // 口の動きをアニメーション化する変数
 float mouthAnimation = 0.0;
@@ -155,8 +158,8 @@ void setup()
 {
   M5.begin();
   Serial.begin(115200);
-  Serial.printf("M5Stack Avatar with Audio starting...\n");
-  Serial.printf("USB Serial Control Ready - Send commands like 'happy', 'sad', etc.\n");
+  Serial.printf("M5Stack Avatar with Rora Face starting...\n");
+  Serial.printf("USB Serial Control Ready - Send commands like 'happy', 'sad', 'rora', etc.\n");
   
   WiFi.mode(WIFI_OFF);  // WiFiを無効にして音声再生に集中
   
@@ -186,13 +189,24 @@ void setup()
   tonePalette.set(COLOR_BACKGROUND, TFT_NAVY);    // 背景を濃い青に
   tonePalette.set(COLOR_PRIMARY, TFT_CYAN);       // 目の色をシアンに
   tonePalette.set(COLOR_SECONDARY, TFT_YELLOW);   // アクセントを黄色に
+  // Rora専用パレット - 魔法的紫系
+  roraPalette = ColorPalette();
+  roraPalette.set(COLOR_BACKGROUND, M5.Lcd.color24to16(0xF0E6FF));   // Light purple background
+  roraPalette.set(COLOR_PRIMARY, M5.Lcd.color24to16(0x4A0E4E));      // Deep purple for lines
+  roraPalette.set(COLOR_SECONDARY, M5.Lcd.color24to16(0xFF69B4));    // Hot pink for accents
+  
   Serial.printf("Color palettes initialized.\n");
+  
+  // カスタムRoraFaceを作成・設定
+  roraFace = new RoraFace();
+  avatar.setFace(roraFace);
+  Serial.printf("Rora Face initialized! ✨\n");
   
   randomSeed(analogRead(0));  // ランダム表情のためのシード初期化
   
   avatar.init();        // アバター描画開始
   Serial.printf("Setup completed. Ready for button presses and serial commands!\n");
-  Serial.printf("Available commands: happy, sad, angry, sleepy, doubt, neutral, play, status, help\n");
+  Serial.printf("Available commands: happy, sad, angry, sleepy, doubt, neutral, rora, play, status, help\n");
 }
 
 void loop()
@@ -238,6 +252,11 @@ void loop()
       avatar.setColorPalette(normalPalette);
       Serial.println("OK: Expression changed to Neutral");
     }
+    else if (command == "rora") {
+      avatar.setExpression(Expression::Rora);
+      avatar.setColorPalette(roraPalette);
+      Serial.println("OK: Expression changed to Rora ✨");
+    }
     else if (command == "play") {
       Serial.println("OK: Playing audio/tone...");
       playAudio();
@@ -245,6 +264,7 @@ void loop()
     else if (command == "status") {
       // ステータス情報を返信
       Serial.println("=== M5Stack Avatar Status ===");
+      Serial.printf("Face Type: Rora Face (◉ eyes with sparkles)\n");
       Serial.printf("WiFi status: %s\n", WiFi.status() == WL_CONNECTED ? "Connected" : "Disconnected");
       if (WiFi.status() == WL_CONNECTED) {
         Serial.printf("IP address: %s\n", WiFi.localIP().toString().c_str());
@@ -262,6 +282,7 @@ void loop()
       Serial.println("sleepy   - Change to sleepy expression");
       Serial.println("doubt    - Change to doubt expression");
       Serial.println("neutral  - Change to neutral expression");
+      Serial.println("rora     - Change to Rora's special sparkle expression ✨");
       Serial.println("play     - Play audio or tone");
       Serial.println("status   - Show current status");
       Serial.println("help     - Show this help message");
@@ -281,6 +302,7 @@ void loop()
   if (M5.BtnB.wasPressed()) {
     // Bボタンが押されたら悲しい顔にする
     avatar.setExpression(Expression::Sad);
+    avatar.setColorPalette(normalPalette);
     Serial.printf("Expression changed to Sad\n");
   }
   
@@ -291,14 +313,22 @@ void loop()
       Expression::Doubt,    // 疑問・困り顔
       Expression::Sleepy,   // 眠そう
       Expression::Neutral,  // 普通
-      Expression::Happy     // 幸せ
+      Expression::Happy,    // 幸せ
+      Expression::Rora      // Roraの特別なキラキラ表情
     };
     
-    int randomIndex = random(5);  // 0-4の範囲でランダム
+    int randomIndex = random(6);  // 0-5の範囲でランダム
     avatar.setExpression(expressions[randomIndex]);
     
+    // 表情に応じてカラーパレットも変更
+    if (expressions[randomIndex] == Expression::Rora) {
+      avatar.setColorPalette(roraPalette);
+    } else {
+      avatar.setColorPalette(normalPalette);
+    }
+    
     // デバッグ用にシリアル出力
-    const char* expressionNames[] = {"Angry", "Doubt", "Sleepy", "Neutral", "Happy"};
+    const char* expressionNames[] = {"Angry", "Doubt", "Sleepy", "Neutral", "Happy", "Rora ✨"};
     Serial.printf("Expression changed to %s\n", expressionNames[randomIndex]);
   }
   
