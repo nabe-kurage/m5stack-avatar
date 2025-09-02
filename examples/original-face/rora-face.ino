@@ -219,7 +219,7 @@ void handleSerialCommands() {
             avatar.setExpression(Expression::Rora);
             avatar.setColorPalette(roraPalette);
             current_expression_idx = 6;
-            Serial.println("OK: Expression changed to Rora ✨");
+            Serial.println("OK: Expression changed to Rora");
         }
         else if (command == "status") {
             printStatus();
