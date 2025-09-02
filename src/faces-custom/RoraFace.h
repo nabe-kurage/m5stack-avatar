@@ -134,11 +134,11 @@ RoraFace::RoraFace()
            // Right eye with custom RoraEye
            new RoraEye(45, 35, false), new BoundingRect(93, 90),
            // Left eye with custom RoraEye  
-           new RoraEye(45, 35, true), new BoundingRect(96, 230),
-           // Right eyebrow
-           new Eyeblow(32, 6, false), new BoundingRect(67, 96),
-           // Left eyebrow
-           new Eyeblow(32, 6, true), new BoundingRect(72, 230)) {}
+           new RoraEye(45, 35, true), new BoundingRect(93, 230),
+           // Right eyebrow (aligned with right eye center) - thicker like mouth
+           new Eyeblow(28, 6, false), new BoundingRect(70, 110),
+           // Left eyebrow (aligned with left eye center) - thicker like mouth
+           new Eyeblow(28, 6, true), new BoundingRect(70, 210)) {}
 
 }  // namespace m5avatar
 
