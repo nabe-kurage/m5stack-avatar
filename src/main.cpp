@@ -70,13 +70,6 @@ void setup()
   // スピーカーを初期化
   M5.Speaker.begin();
   M5.Speaker.setVolume(180);      // 音量を上げてテスト（0-255）
-  M5.Speaker.setChannelVolume(0, 180);  // チャンネル0の音量も設定
-  M5.Speaker.setChannelVolume(1, 180);  // チャンネル1の音量も設定
-  Serial.printf("Speaker initialized with volume 180/255\n");
-  
-  // 画面に音量情報を表示
-  displayVolumeInfo(180, "Speaker Ready");
-  delay(2000);  // 2秒間表示
   
   // カラーパレットを設定
   normalPalette = ColorPalette();  // デフォルトパレット
