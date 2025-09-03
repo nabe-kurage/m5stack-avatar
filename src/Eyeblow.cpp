@@ -17,7 +17,7 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
     return;
   }
   // Hide eyebrows for Neutral and Happy expressions
-  if (exp == Expression::Neutral || exp == Expression::Happy) {
+  if (exp == Expression::Neutral || exp == Expression::Happy || exp == Expression::Sleepy) {
     return;
   }
   
@@ -57,9 +57,9 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
     spi->fillTriangle(x1, y1, x2, y2, x3, y3, primaryColor);
     spi->fillTriangle(x2, y2, x3, y3, x4, y4, primaryColor);
   } else {
-    // For other expressions (Sleepy, Rora), draw standard rectangle
+    // For other expressions (Rora), draw standard rectangle
     int x1 = x - width / 2;
-    int y1 = y - height / 2;
+    int y1 = y - height / 2 - 10;
     spi->fillRect(x1, y1, width, height, primaryColor);
   }
 }

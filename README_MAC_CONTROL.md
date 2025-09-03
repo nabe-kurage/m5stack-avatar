@@ -51,6 +51,7 @@ make status
 | `neutral` | 😐 普通の顔 | `make neutral` |
 | `rora` | ✨ Roraの特別なキラキラ表情 | `make rora` |
 | `play` | 🎵 音声再生 | `make play` |
+| `pakupaku` | 👄 ぱくぱく動作（指定秒数） | `make pakupaku DURATION=5`<br>`make pakupaku-5` |
 | `status` | ℹ️ ステータス確認 | `make status` |
 
 ## 🛠️ 使用方法

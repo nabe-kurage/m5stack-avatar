@@ -63,11 +63,13 @@ M5Stack Avatar Controller - Shell Script
     neutral  - 普通の顔にする
     rora     - Roraの特別なキラキラ表情にする ✨
     play     - 音声再生
+    pakupaku [秒数] - ぱくぱく動作（デフォルト3秒）
     status   - ステータス確認
     help     - ヘルプ表示
     
 例:
     $0 happy
+    $0 pakupaku 5
     $0 sad /dev/cu.usbserial-XXXXXXXX
     $0 status
     
@@ -79,24 +81,43 @@ EOF
 # メイン処理
 main() {
     local command="$1"
-    local port="${2:-$M5STACK_PORT}"
+    local arg2="$2"
+    local port="$3"
     
-    case "$command" in
-        happy|sad|angry|sleepy|doubt|neutral|rora|play|status|help)
-            send_command "$command" "$port"
-            ;;
-        ""|--help|-h)
-            show_help
-            ;;
-        --find-port)
-            find_m5stack_port
-            ;;
-        *)
-            echo "エラー: 不明なコマンド '$command'"
-            echo "利用可能なコマンドを確認するには: $0 --help"
+    # pakupakuコマンドの特別な処理
+    if [[ "$command" == "pakupaku" ]] && [[ -n "$arg2" ]] && [[ "$arg2" =~ ^[0-9]+\.?[0-9]*$ ]]; then
+        # arg2が数値の場合、それは秒数として扱い、portは第3引数
+        local duration="$arg2"
+        port="${port:-$M5STACK_PORT}"
+        
+        # 秒数の妥当性チェック
+        if (( $(echo "$duration >= 0.1 && $duration <= 60" | bc -l) )); then
+            send_command "pakupaku $duration" "$port"
+        else
+            echo "エラー: 秒数は0.1から60の間で指定してください"
             exit 1
-            ;;
-    esac
+        fi
+    else
+        # 通常のコマンド処理
+        port="${arg2:-$M5STACK_PORT}"
+        
+        case "$command" in
+            happy|sad|angry|sleepy|doubt|neutral|rora|play|pakupaku|status|help)
+                send_command "$command" "$port"
+                ;;
+            ""|--help|-h)
+                show_help
+                ;;
+            --find-port)
+                find_m5stack_port
+                ;;
+            *)
+                echo "エラー: 不明なコマンド '$command'"
+                echo "利用可能なコマンドを確認するには: $0 --help"
+                exit 1
+                ;;
+        esac
+    fi
 }
 
 # スクリプト実行

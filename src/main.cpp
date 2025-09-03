@@ -261,6 +261,55 @@ void loop()
       Serial.println("OK: Playing audio/tone...");
       playAudio();
     }
+    else if (command.startsWith("pakupaku")) {
+      // pakupakuコマンドの引数解析
+      float duration = 3.0;  // デフォルト3秒
+      
+      // スペースで分割して秒数を取得
+      int spaceIndex = command.indexOf(' ');
+      if (spaceIndex > 0) {
+        String durationStr = command.substring(spaceIndex + 1);
+        durationStr.trim();
+        float parsedDuration = durationStr.toFloat();
+        
+        // 妥当性チェック
+        if (parsedDuration >= 0.1 && parsedDuration <= 60.0) {
+          duration = parsedDuration;
+        } else {
+          Serial.println("Error: Duration must be between 0.1 and 60 seconds");
+          return;
+        }
+      }
+      
+      Serial.printf("OK: Starting mouth paku-paku animation for %.1f seconds\n", duration);
+      
+      // 指定された秒数間口をぱくぱくさせる
+      unsigned long animationDuration = (unsigned long)(duration * 1000);  // ミリ秒に変換
+      unsigned long startTime = millis();
+      unsigned long lastUpdate = 0;
+      float mouthAnimation = 0;
+      int cycleCount = 0;
+      
+      while (millis() - startTime < animationDuration) {
+        unsigned long currentTime = millis();
+        if (currentTime - lastUpdate > 100) {  // 10fps（より遅く）
+          mouthAnimation += 0.5;  // より大きな変化
+          float mouthOpen = (sin(mouthAnimation) + 1.0) * 0.8;  // 0.0〜1.6の範囲（より大きく開く）
+          avatar.setMouthOpenRatio(mouthOpen);
+          lastUpdate = currentTime;
+          cycleCount++;
+          
+          // デバッグ出力でアニメーションの状況を表示
+          if (cycleCount % 10 == 0) {
+            Serial.printf("Animation cycle %d, mouthOpen: %.2f\n", cycleCount, mouthOpen);
+          }
+        }
+        delay(10);
+      }
+      
+      avatar.setMouthOpenRatio(0);  // 口を閉じる
+      Serial.printf("Paku-paku animation finished (%.1f seconds)\n", duration);
+    }
     else if (command == "status") {
       // ステータス情報を返信
       Serial.println("=== M5Stack Avatar Status ===");
@@ -284,6 +333,7 @@ void loop()
       Serial.println("neutral  - Change to neutral expression");
       Serial.println("rora     - Change to Rora's special sparkle expression ✨");
       Serial.println("play     - Play audio or tone");
+      Serial.println("pakupaku [seconds] - Make mouth move paku-paku (default 3 sec)");
       Serial.println("status   - Show current status");
       Serial.println("help     - Show this help message");
       Serial.println("==========================");

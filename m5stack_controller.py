@@ -108,7 +108,8 @@ class M5StackController:
     def interactive_mode(self):
         """インタラクティブモード"""
         print("\n=== M5Stack Avatar インタラクティブ制御 ===")
-        print("利用可能なコマンド: happy, sad, angry, sleepy, doubt, neutral, rora, play, status, help")
+        print("利用可能なコマンド: happy, sad, angry, sleepy, doubt, neutral, rora, play, pakupaku [秒数], status, help")
+        print("例: pakupaku 5 (5秒間ぱくぱく)")
         print("終了するには 'quit' または Ctrl+C を押してください\n")
         
         if not self.connect():
@@ -116,12 +117,24 @@ class M5StackController:
             
         try:
             while True:
-                command = input("コマンドを入力: ").strip().lower()
+                command_input = input("コマンドを入力: ").strip()
                 
-                if command in ['quit', 'exit', 'q']:
+                if command_input.lower() in ['quit', 'exit', 'q']:
                     break
-                elif command:
-                    self.send_command(command)
+                elif command_input:
+                    # pakupakuコマンドの特別な処理
+                    parts = command_input.split()
+                    if len(parts) >= 2 and parts[0].lower() == 'pakupaku':
+                        try:
+                            duration = float(parts[1])
+                            if 0.1 <= duration <= 60:
+                                self.send_command(f"pakupaku {duration}")
+                            else:
+                                print("エラー: 秒数は0.1から60の間で指定してください")
+                        except ValueError:
+                            print("エラー: 秒数は数値で指定してください")
+                    else:
+                        self.send_command(command_input.lower())
                     
         except KeyboardInterrupt:
             print("\n終了します...")
@@ -131,8 +144,9 @@ class M5StackController:
 def main():
     parser = argparse.ArgumentParser(description='M5Stack Avatar Controller')
     parser.add_argument('command', nargs='?', 
-                       choices=['happy', 'sad', 'angry', 'sleepy', 'doubt', 'neutral', 'rora', 'play', 'status', 'help'],
+                       choices=['happy', 'sad', 'angry', 'sleepy', 'doubt', 'neutral', 'rora', 'play', 'pakupaku', 'status', 'help'],
                        help='M5Stackに送信するコマンド')
+    parser.add_argument('duration', nargs='?', type=str, help='pakupakuコマンドの時の秒数（オプション）')
     parser.add_argument('--port', '-p', help='シリアルポート (例: /dev/cu.usbserial-XXXXXXXX)')
     parser.add_argument('--interactive', '-i', action='store_true', help='インタラクティブモード')
     
@@ -144,11 +158,27 @@ def main():
         controller.interactive_mode()
     elif args.command:
         if controller.connect():
-            controller.send_command(args.command)
+            # pakupakuコマンドで引数が指定されている場合
+            if args.command == 'pakupaku' and args.duration:
+                # 秒数の妥当性チェック
+                try:
+                    duration = float(args.duration)
+                    if 0.1 <= duration <= 60:  # 0.1秒から60秒まで許可
+                        command_with_duration = f"pakupaku {duration}"
+                        controller.send_command(command_with_duration)
+                    else:
+                        print("エラー: 秒数は0.1から60の間で指定してください")
+                        return
+                except ValueError:
+                    print("エラー: 秒数は数値で指定してください")
+                    return
+            else:
+                controller.send_command(args.command)
             controller.disconnect()
     else:
         print("使用方法:")
         print("  python3 m5stack_controller.py happy")
+        print("  python3 m5stack_controller.py pakupaku 5")
         print("  python3 m5stack_controller.py --interactive")
         print("  python3 m5stack_controller.py --help")
 

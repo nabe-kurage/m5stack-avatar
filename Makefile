@@ -1,7 +1,7 @@
 # M5Stack Avatar Controller Makefile
 
 # 設定
-PYTHON = python3
+PYTHON = ./venv/bin/python3
 SHELL_SCRIPT = ./m5stack_control.sh
 PYTHON_SCRIPT = ./m5stack_controller.py
 
@@ -23,6 +23,8 @@ help:
 	@echo "  make neutral     - 普通の顔にする"
 	@echo "  make rora        - Roraの特別なキラキラ表情にする ✨"
 	@echo "  make play        - 音声再生"
+	@echo "  make pakupaku [DURATION=秒数] - ぱくぱく動作（デフォルト3秒）"
+	@echo "  make pakupaku-5  - 5秒間ぱくぱく動作"
 	@echo "  make status      - ステータス確認"
 	@echo "  make interactive - インタラクティブモード"
 	@echo "  make upload      - M5Stackにコードをアップロード"
@@ -64,6 +66,15 @@ rora:
 # 音声再生
 play:
 	@$(PYTHON) $(PYTHON_SCRIPT) play
+
+# ぱくぱく動作（指定秒数口をぱくぱく、デフォルト3秒）
+# 使用例: make pakupaku DURATION=5 または make pakupaku-5
+pakupaku:
+	@$(PYTHON) $(PYTHON_SCRIPT) pakupaku $(DURATION)
+
+# 秒数を直接指定できるターゲット（例：make pakupaku-3, make pakupaku-10）
+pakupaku-%:
+	@$(PYTHON) $(PYTHON_SCRIPT) pakupaku $*
 
 # ステータス確認
 status:
@@ -142,7 +153,9 @@ demo:
 	@sleep 3
 	@$(PYTHON) $(PYTHON_SCRIPT) rora
 	@sleep 3
+	@$(PYTHON) $(PYTHON_SCRIPT) pakupaku
+	@sleep 3
 	@$(PYTHON) $(PYTHON_SCRIPT) neutral
 	@echo "デモ完了"
 
-.PHONY: help setup test happy sad angry sleepy doubt neutral rora play status interactive upload build find-port clean shell-happy shell-sad shell-rora shell-status demo
+.PHONY: help setup test happy sad angry sleepy doubt neutral rora play pakupaku status interactive upload build find-port clean shell-happy shell-sad shell-rora shell-status demo

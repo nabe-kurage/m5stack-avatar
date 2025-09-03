@@ -129,8 +129,9 @@ void RoraEye::drawPupil(M5Canvas *canvas) {
 
 // ===== RoraFace Implementation =====
 
+// BoundingRect(y, x)
 RoraFace::RoraFace()
-    : Face(new Mouth(10, 40, 2, 40), new BoundingRect(110, 163),
+    : Face(new Mouth(30, 40, 2, 30), new BoundingRect(110, 160), // 160 - 40/2 = 140だと思ったのにかなり左にずれてしまう
            // Right eye with custom RoraEye
            new RoraEye(45, 45, false), new BoundingRect(93, 230),
            // Left eye with custom RoraEye  
