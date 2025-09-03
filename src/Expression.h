@@ -6,7 +6,7 @@
 #define EXPRESSION_H_
 
 namespace m5avatar {
-enum class Expression { Happy, Angry, Sad, Doubt, Sleepy, Neutral };
+enum class Expression { Happy, Angry, Sad, Doubt, Sleepy, Neutral, Rora };
 }
 
 #endif  // EXPRESSION_H_

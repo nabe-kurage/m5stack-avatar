@@ -16,28 +16,50 @@ void Eyeblow::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   if (width == 0 || height == 0) {
     return;
   }
-  // draw two triangles to make rectangle
-  if (exp == Expression::Angry || exp == Expression::Sad) {
+  // Hide eyebrows for Neutral and Happy expressions
+  if (exp == Expression::Neutral || exp == Expression::Happy || exp == Expression::Sleepy) {
+    return;
+  }
+  
+  // Draw angled eyebrows using two triangles (based on AAEyebrow implementation)
+  if (exp == Expression::Angry || exp == Expression::Sad || exp == Expression::Doubt) {
     int x1, y1, x2, y2, x3, y3, x4, y4;
-    int a = isLeft ^ (exp == Expression::Sad) ? -1 : 1;
-    int dx = a * 3;
-    int dy = a * 5;
-    x1 = x - width / 2;
-    x2 = x1 - dx;
-    x4 = x + width / 2;
-    x3 = x4 + dx;
-    y1 = y - height / 2 - dy;
-    y2 = y + height / 2 - dy;
-    y3 = y - height / 2 + dy;
-    y4 = y + height / 2 + dy;
+    int a, dx, dy;
+    
+    if (exp == Expression::Angry) {
+      // Angry: \\ / shape - inner side higher (ハの字)
+      a = isLeft ? 1 : -1;  // For angry, reverse the direction to make \\ / shape
+      dx = a * 4;  // Horizontal offset for angle
+      dy = a * 6;  // Vertical offset for angle
+    } else if (exp == Expression::Sad) {
+      // Sad: / \\ shape - outer side higher (逆ハの字)
+      a = isLeft ? -1 : 1;  // Normal direction for sad
+      dx = a * 3;
+      dy = a * 5;
+    } else { // Expression::Doubt
+      // Doubt: slight droop
+      a = isLeft ? 1 : -1;
+      dx = a * 2;
+      dy = a * 3;
+    }
+    
+    // Calculate the four corners of the angled eyebrow
+    x1 = x - width / 2;      // Left inner point
+    x2 = x1 - dx;            // Left outer point 
+    x4 = x + width / 2;      // Right inner point
+    x3 = x4 + dx;            // Right outer point
+    y1 = y - height / 2 - dy; // Left inner Y
+    y2 = y + height / 2 - dy; // Left outer Y
+    y3 = y - height / 2 + dy; // Right inner Y  
+    y4 = y + height / 2 + dy; // Right outer Y
+    
+    // Draw angled eyebrow using two triangles
     spi->fillTriangle(x1, y1, x2, y2, x3, y3, primaryColor);
     spi->fillTriangle(x2, y2, x3, y3, x4, y4, primaryColor);
   } else {
+    // For other expressions (Rora), draw standard rectangle
     int x1 = x - width / 2;
-    int y1 = y - height / 2;
-    if (exp == Expression::Happy) {
-      y1 = y1 - 5;
-    }
+    int y1 = y - height / 2 - 10;
     spi->fillRect(x1, y1, width, height, primaryColor);
   }
 }
