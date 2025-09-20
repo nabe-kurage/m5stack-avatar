@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 # M5StackControllerをインポート
 from m5stack_controller import M5StackController
 
-# .envファイルを読み込み
+# .envファイルがあれば読み込み
 load_dotenv()
 
 # ログ設定
